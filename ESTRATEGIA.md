@@ -6,7 +6,7 @@ Automatizar la validación del CRUD completo del recurso `/usuarios` de
 ServeRest: contrato, códigos de estado, esquemas de respuesta, reglas de negocio
 y manejo de errores.
 
-**Alcance:** 5 features (uno por endpoint), 34 escenarios — 19 positivos y 15
+**Alcance:** 5 features (uno por endpoint), 34 escenarios — 14 positivos y 20
 negativos. Cubre los 5 criterios de aceptación del reto.
 
 ---
@@ -124,7 +124,7 @@ deja datos residuales.
 
 ## 5. Cobertura de casos negativos
 
-15 de los 34 escenarios son negativos, organizados en cuatro familias:
+20 de los 34 escenarios son negativos, organizados en cuatro familias:
 
 1. **Campos obligatorios ausentes** — `Scenario Outline` sobre los 4 campos.
 2. **Valores inválidos** — email mal formado, campos en blanco,

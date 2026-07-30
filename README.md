@@ -113,8 +113,8 @@ backend-serverest/
 
 | Etiqueta | Escenarios |
 |---|---|
-| `@positivo` | 19 |
-| `@negativo` | 15 |
+| `@positivo` | 14 |
+| `@negativo` | 20 |
 | `@smoke` | 5 (uno por operación CRUD) |
 
 ---

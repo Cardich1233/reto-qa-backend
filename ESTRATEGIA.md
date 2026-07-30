@@ -187,7 +187,7 @@ la equivocada.
 
 | Nivel | Comando | Cuándo |
 |---|---|---|
-| Humo | `mvnw test -Dtest=SmokeTest` | En cada commit — 5 escenarios, uno por operación CRUD |
+| Humo | `mvnw test -Dkarate.options="--tags @smoke"` | Verificación rápida — 5 escenarios, uno por operación CRUD |
 | Completo | `mvnw test` | En el pipeline de integración |
 | Focalizado | `mvnw test -Dkarate.options="--tags @negativo"` | Al depurar un área concreta |
 
@@ -206,7 +206,7 @@ escenario contra el criterio de aceptación del reto.
 | Sin dependencia explícita de JUnit en el `pom.xml` | `karate-junit5` ya la aporta; declararla causaba un desalineamiento entre `junit-platform-engine` y el launcher de Surefire |
 | 5 hilos por defecto | La independencia de datos lo permite; baja la suite de ~50 s a ~14 s. Configurable con `-Dkarate.threads=1` |
 | Gherkin en inglés | Karate no soporta la internacionalización de palabras clave de Gherkin. Los títulos y comentarios sí están en español |
-| Un runner extra para `@smoke`, excluido de Surefire | `mvnw test` corre la suite completa sin duplicar trabajo; el humo se invoca a demanda con `-Dtest=SmokeTest` |
+| Un solo runner, y el subconjunto de humo por etiquetas | Evita duplicar clases Java para algo que `--tags @smoke` ya resuelve |
 
 ---
 

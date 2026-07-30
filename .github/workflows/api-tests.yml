@@ -74,7 +74,6 @@ jobs:
           name: reporte-karate-${{ github.run_number }}
           path: |
             target/karate-reports/
-            target/karate.log
             salida.txt
           retention-days: 14
           if-no-files-found: warn

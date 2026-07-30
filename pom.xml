@@ -39,9 +39,6 @@
           <exclude>**/*.java</exclude>
         </excludes>
       </testResource>
-      <testResource>
-        <directory>src/test/resources</directory>
-      </testResource>
     </testResources>
 
     <plugins>
@@ -58,11 +55,6 @@
           <includes>
             <include>**/*Test.java</include>
           </includes>
-          <!-- El runner de humo es un subconjunto de la suite completa:
-               se invoca a demanda con  mvnw test -Dtest=SmokeTest  -->
-          <excludes>
-            <exclude>**/SmokeTest.java</exclude>
-          </excludes>
           <systemPropertyVariables>
             <karate.env>${karate.env}</karate.env>
           </systemPropertyVariables>

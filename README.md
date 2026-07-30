@@ -48,7 +48,7 @@ tardan unos 15 segundos.
 | Comando | Qué ejecuta |
 |---|---|
 | `mvnw test` | Suite completa (34 escenarios) |
-| `mvnw test -Dtest=SmokeTest` | Sólo `@smoke`: el camino feliz de cada operación CRUD |
+| `mvnw test -Dkarate.options="--tags @smoke"` | Sólo el camino feliz de cada operación CRUD |
 | `mvnw test -Dkarate.options="--tags @negativo"` | Sólo los casos negativos |
 | `mvnw test -Dkarate.options="--tags @registrar"` | Sólo `POST /usuarios` |
 | `mvnw test -Dkarate.threads=1` | Ejecución secuencial (log legible para depurar) |
@@ -64,7 +64,6 @@ Después de cada corrida:
 |---|---|
 | Reporte HTML de Karate | `target/karate-reports/karate-summary.html` |
 | Reporte JSON (Cucumber, para CI) | `target/karate-reports/*.json` |
-| Log completo con request/response | `target/karate.log` |
 
 El reporte HTML incluye, para cada escenario, la petición y la respuesta HTTP
 completas: es la evidencia de la ejecución.
@@ -77,27 +76,23 @@ completas: es la evidencia de la ejecución.
 backend-serverest/
 ├── pom.xml
 ├── mvnw / mvnw.cmd               # Maven Wrapper (no requiere Maven instalado)
-└── src/test/
-    ├── java/
-    │   ├── karate-config.js      # Configuración global (baseUrl, helpers, esquemas)
-    │   ├── reto/
-    │   │   ├── UsuariosTest.java # Runner de la suite completa (paralelo)
-    │   │   └── SmokeTest.java    # Runner de humo (@smoke)
-    │   ├── usuarios/             # Un feature por endpoint
-    │   │   ├── usuarios-listar.feature       # GET    /usuarios
-    │   │   ├── usuarios-registrar.feature    # POST   /usuarios
-    │   │   ├── usuarios-buscar.feature       # GET    /usuarios/{_id}
-    │   │   ├── usuarios-actualizar.feature   # PUT    /usuarios/{_id}
-    │   │   └── usuarios-eliminar.feature     # DELETE /usuarios/{_id}
-    │   ├── helpers/              # Utilidades reutilizables
-    │   │   ├── nuevo-usuario.js          # Generador de datos de prueba
-    │   │   ├── crear-usuario.feature     # Setup:    alta de usuario
-    │   │   ├── consultar-usuario.feature # Verificación por _id
-    │   │   └── eliminar-usuario.feature  # Teardown: baja de usuario
-    │   └── schemas/
-    │       └── esquemas.js       # Catálogo central de esquemas JSON
-    └── resources/
-        └── logback-test.xml      # Configuración de logging
+└── src/test/java/
+    ├── karate-config.js          # Configuración global (baseUrl, helpers, esquemas)
+    ├── reto/
+    │   └── UsuariosTest.java     # Runner de la suite (ejecución paralela)
+    ├── usuarios/                 # Un feature por endpoint
+    │   ├── usuarios-listar.feature       # GET    /usuarios
+    │   ├── usuarios-registrar.feature    # POST   /usuarios
+    │   ├── usuarios-buscar.feature       # GET    /usuarios/{_id}
+    │   ├── usuarios-actualizar.feature   # PUT    /usuarios/{_id}
+    │   └── usuarios-eliminar.feature     # DELETE /usuarios/{_id}
+    ├── helpers/                  # Utilidades reutilizables
+    │   ├── nuevo-usuario.js              # Generador de datos de prueba
+    │   ├── crear-usuario.feature         # Setup:    alta de usuario
+    │   ├── consultar-usuario.feature     # Verificación por _id
+    │   └── eliminar-usuario.feature      # Teardown: baja de usuario
+    └── schemas/
+        └── esquemas.js           # Catálogo central de esquemas JSON
 ```
 
 ---
@@ -176,8 +171,8 @@ ejecuta la suite completa en Ubuntu con JDK 17 (Temurin) y caché de Maven.
 Cada ejecución deja:
 
 - Un **resumen** con el conteo de escenarios y features en la portada del run.
-- Un **artefacto** (`reporte-karate-N`) con el reporte HTML de Karate y el log
-  completo de peticiones y respuestas, descargable durante 14 días.
+- Un **artefacto** (`reporte-karate-N`) con el reporte HTML de Karate —que
+  incluye el detalle de cada petición y respuesta— descargable durante 14 días.
 
 La regresión programada tiene un valor extra en este caso: ServeRest es un
 ambiente público que cambia, y una corrida diaria detecta cambios de contrato

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.reto.qa</groupId>
+  <artifactId>reto-qa-backend-serverest</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+  <name>Reto QA BackEnd - API Usuarios ServeRest (Karate DSL)</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <karate.version>1.4.1</karate.version>
+    <!-- Perfil de ejecución: se lee en karate-config.js -->
+    <karate.env>dev</karate.env>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.intuit.karate</groupId>
+      <artifactId>karate-junit5</artifactId>
+      <version>${karate.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- JUnit 5 lo aporta karate-junit5; no se declara versión propia para
+         evitar desalineación entre junit-platform-engine y el launcher. -->
+  </dependencies>
+
+  <build>
+    <testResources>
+      <!-- Los .feature, .js y .json viven junto a los runners en src/test/java -->
+      <testResource>
+        <directory>src/test/java</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>
+    </testResources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+          </includes>
+          <!-- El runner de humo es un subconjunto de la suite completa:
+               se invoca a demanda con  mvnw test -Dtest=SmokeTest  -->
+          <excludes>
+            <exclude>**/SmokeTest.java</exclude>
+          </excludes>
+          <systemPropertyVariables>
+            <karate.env>${karate.env}</karate.env>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

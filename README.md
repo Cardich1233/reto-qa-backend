@@ -1,5 +1,7 @@
 # Reto de Automatización QA — BackEnd (API Usuarios de ServeRest)
 
+[![API Usuarios ServeRest](https://github.com/Cardich1233/reto-qa-backend/actions/workflows/api-tests.yml/badge.svg)](https://github.com/Cardich1233/reto-qa-backend/actions/workflows/api-tests.yml)
+
 Suite de pruebas de API para el recurso **Usuarios** de
 [ServeRest](https://serverest.dev/), construida con **Karate DSL**.
 
@@ -159,7 +161,31 @@ defecto) y no deja residuos.
 
 ---
 
-## 8. Informe de estrategia
+## 8. Integración continua (GitHub Actions)
+
+El workflow [`.github/workflows/api-tests.yml`](.github/workflows/api-tests.yml)
+ejecuta la suite completa en Ubuntu con JDK 17 (Temurin) y caché de Maven.
+
+| Disparador | Cuándo |
+|---|---|
+| `push` a `main` | En cada integración |
+| `pull_request` a `main` | Antes de aprobar cualquier cambio |
+| `schedule` | Regresión de lunes a viernes, 07:00 hora de Lima |
+| `workflow_dispatch` | Ejecución manual desde la pestaña **Actions**, con filtro de etiquetas y número de hilos configurables |
+
+Cada ejecución deja:
+
+- Un **resumen** con el conteo de escenarios y features en la portada del run.
+- Un **artefacto** (`reporte-karate-N`) con el reporte HTML de Karate y el log
+  completo de peticiones y respuestas, descargable durante 14 días.
+
+La regresión programada tiene un valor extra en este caso: ServeRest es un
+ambiente público que cambia, y una corrida diaria detecta cambios de contrato
+sin que nadie tenga que ejecutar nada.
+
+---
+
+## 9. Informe de estrategia
 
 El detalle de la estrategia de automatización y los patrones aplicados está en
 [ESTRATEGIA.md](ESTRATEGIA.md).

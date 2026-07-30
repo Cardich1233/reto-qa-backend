@@ -1,0 +1,80 @@
+name: API Usuarios ServeRest
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Regresión programada: 12:00 UTC = 07:00 Lima, de lunes a viernes.
+  schedule:
+    - cron: '0 12 * * 1-5'
+  # Ejecución manual desde la pestaña Actions.
+  workflow_dispatch:
+    inputs:
+      etiquetas:
+        description: 'Filtro de etiquetas Karate (ej. @smoke, @negativo)'
+        required: false
+        default: ''
+      hilos:
+        description: 'Hilos de ejecución en paralelo'
+        required: false
+        default: '5'
+
+concurrency:
+  group: api-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: Suite de API (Karate DSL)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Ejecutar la suite
+        id: suite
+        shell: bash
+        run: |
+          set -o pipefail
+          HILOS="${{ inputs.hilos || '5' }}"
+          if [ -n "${{ inputs.etiquetas }}" ]; then
+            ./mvnw -B test -Dkarate.threads="$HILOS" -Dkarate.options="--tags ${{ inputs.etiquetas }}" 2>&1 | tee salida.txt
+          else
+            ./mvnw -B test -Dkarate.threads="$HILOS" 2>&1 | tee salida.txt
+          fi
+
+      - name: Publicar el resumen de la ejecución
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Resultado de la suite de API — ServeRest"
+            echo ""
+            echo '```'
+            grep -E "^(scenarios|features):" salida.txt | tail -n 3 || echo "La suite no llegó a producir un resumen."
+            echo '```'
+            echo ""
+            echo "El reporte HTML de Karate, con el detalle de cada petición y respuesta, está en los artefactos de esta ejecución."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publicar reporte de Karate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-karate-${{ github.run_number }}
+          path: |
+            target/karate-reports/
+            target/karate.log
+            salida.txt
+          retention-days: 14
+          if-no-files-found: warn
